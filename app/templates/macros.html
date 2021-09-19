@@ -1,0 +1,47 @@
+{% macro displayPitches(pitches)%}
+{%for pitch in pitches%}
+<div class="container">
+    <div class="col-md-12 col-sm-6 mb-3 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body"style="font-size:large">
+                {{categoryGroup(pitch.category)}}
+                <h2 class="card-title">{{pitch.title}}</h2>
+                <p class="card-text">{{pitch.description}}</p>
+                </p>
+                <a href="/pitch/{{pitch.id}}" class="btn btn-outline-danger"style="font-size:small">Show Pitch</a>
+            </div>
+        </div>
+    </div>
+</div>
+{%endfor%}
+{%endmacro%}
+{%macro displayComments(comments_list)%}
+{%for comment in comments_list%}
+<div class="media my-3" style="font-size:large">
+    {% if comment.user.profile_pic_path %}
+    <img src="{{url_for('static',filename=comment.user.profile_pic_path)}}" style="height: 40px; width: 40px; border-radius: 50%"
+        alt="Profile pic" class="card-img-top">
+    {%else%}
+    <img src="{{url_for('static',filename='photos/default.jpg')}}" style="height: 40px; width: 40px; border-radius: 50%"
+        alt="Profile pic" class="card-img-top">
+    {% endif %}
+    <div class="media-body ml-3">
+        <h5 class="my-0">{{comment.user.username}}</h5>
+        {{comment.content}}
+    </div>
+</div>
+{%endfor%}
+{%endmacro%}
+{% macro categoryGroup(category) %}
+{% if category == 'technology' %}
+<span class="
+        badge badge-pill badge-info p-2 mb-2" style="font-size: 1em">{{category}}</span>
+{% elif category == 'business'%}
+<span class="badge badge-pill badge-info p-2 mb-2" style="font-size: 1em">{{category}}</span>
+{% elif category == 'health'%}
+<span class="badge badge-pill badge-info p-2 mb-2" style="font-size: 1em">{{category}}</span>
+{% elif category == 'Finance'%}
+<span class="badge badge-pill badge-info p-2 mb-2" style="font-size: 1em">{{category}}</span>
+{% elif category == 'love and relationship'%}
+<span class="badge badge-pill badge-info p-2 mb-2" style="font-size: 1em">{{category}}</span>
+{% endif %} {% endmacro %}
