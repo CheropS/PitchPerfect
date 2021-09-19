@@ -1,5 +1,11 @@
-from flask import Flask
+from flask import Flask 
+from flask_bootstrap import Bootstrap
 
 
-# Initializing application
-app = Flask(__name__)
+bootstrap = Bootstrap()
+
+def create_app(config_name):
+    app= Flask(__name__)
+
+
+from .main import views
