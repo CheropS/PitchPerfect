@@ -33,3 +33,14 @@ def process_results(pitch_list):
         pitch_results.append(pitch_object)
 
     return pitch_results
+
+def get_pitch(id):
+   
+        pitch_object = None
+        if pitch_details_response:
+            id = pitch_details_response.get('id')
+            
+
+            pitch_object = Pitch(id)
+
+        return pitch_object
