@@ -10,6 +10,7 @@ from .forms import RegistrationForm, LoginForm
 from ..import db
 from flask_login import login_user, logout_user, login_required
 from ..email import mail_message
+import markdown2
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
@@ -45,4 +46,5 @@ def register():
         return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html',registration_form = form)
+    
 
