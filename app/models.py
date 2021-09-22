@@ -8,3 +8,21 @@ class Pitch:
         self.category=category
         self.title=title
         self.description=description
+
+class User:
+    '''
+    This is a class that defines a user's bio data
+    '''
+
+    def __init__(self, user_id, bio, username, picture):
+        self.user_id=user_id
+        self.bio=bio
+        self.username=username
+        self.pic=picture 
+
+'''
+class user-bio, email, username,pic db.relationship(1:many)
+comments-userid, pitchid, comment
+upvote
+downvote-id,pitch
+'''
