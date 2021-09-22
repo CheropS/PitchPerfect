@@ -1,10 +1,11 @@
 from flask.helpers import url_for
-from app.main.forms import PitchForms
-from app.models import Pitch
+from app.main.forms import PitchForms, ProfileUpdateForm
+from app.models import Pitch, User
 from flask import render_template
 from . import main
 from flask_login import login_required
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, abort
+from ..import db
 
 # Views
 @main.route('/')
@@ -15,21 +16,8 @@ def index():
     '''
     return render_template('index.html')
 
-# @main.route('/New_Pitch', methods=['POST', 'GET'])
-# @login_required
-# def newpitch():
-#     form=PitchForms()
-#     if form.validate_on_submit():
 
-# '''
-# route:new pitch
-# comments(id)
-# user updates-profile
-# user updates-picture
-# upvote(pitch_id)
-# downvote(pitch_id)
 
-# '''
 @main.route('/New-Pitch', methods=['POST', 'GET'])
 @login_required
 def new_pitch():
@@ -49,4 +37,21 @@ def new_pitch():
     title=f'{{pitch.title}} pitch'
     return render_template('new_pitch.html',title = title, PitchForms=form)
 
+@main.route('/user/<uname>/update',methods = ['GET','POST'])
+@login_required
+def update_profile(uname):
+    user = User.query.filter_by(username = uname).first()
+    if user is None:
+        abort(404)
 
+    form = ProfileUpdateForm()
+
+    if form.validate_on_submit():
+        user.bio = form.bio.data
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('.profile',uname=user.username))
+
+    return render_template('profile/update.html',form =form)
