@@ -1,3 +1,4 @@
+from . import db
 
 class Pitch:
     '''This is a class that defines Pitch class
@@ -19,6 +20,16 @@ class User:
         self.bio=bio
         self.username=username
         self.pic=picture 
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer,primary_key = True)
+    username = db.Column(db.String(255))
+    bio=db.Column(db.String(255))
+    pic=db.Column(db.String(255))
+
+    def __repr__(self):
+        return f'User {self.username}'
 
 '''
 class user-bio, email, username,pic db.relationship(1:many)
