@@ -1,4 +1,5 @@
 from sqlalchemy.orm import backref
+from werkzeug.security import generate_password_hash,check_password_hash
 from . import db
 
 class Pitch:
@@ -22,16 +23,16 @@ class User:
         self.username=username
         self.pic=picture 
 
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer,primary_key = True)
-    username = db.Column(db.String(255))
-    bio=db.Column(db.String(255))
-    pic=db.Column(db.String(255))
-    role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
+# class User(db.Model):
+#     __tablename__ = 'users'
+#     id = db.Column(db.Integer,primary_key = True)
+#     username = db.Column(db.String(255))
+#     bio=db.Column(db.String(255))
+#     pic=db.Column(db.String(255))
+#     role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
 
-    def __repr__(self):
-        return f'User {self.username}'
+#     def __repr__(self):
+#         return f'User {self.username}'
 
 class UPitch(db.Model):
     __tablename__ = 'pitches'
@@ -45,6 +46,7 @@ class UPitch(db.Model):
     upvote=db.relationship('Upvote', backref='pitch', lazy='dynamic')
     downvote=db.relationship('Downvote', backref='pitch', lazy='dynamic')
     comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
+    pass_secure = db.Column(db.String(255))
 
     def save_pitch(self):
         db.session.add(self)
@@ -56,6 +58,18 @@ class UPitch(db.Model):
 
     def __repr__(self):
         return f'Pitch {self.post}'
+
+    @property
+    def password(self):
+            raise AttributeError('You cannot read the password attribute')
+
+    @password.setter
+    def password(self, password):
+            self.pass_secure = generate_password_hash(password)
+
+
+    def verify_password(self,password):
+            return check_password_hash(self.pass_secure,password)
     
 '''
 class user-bio, email, username,pic db.relationship(1:many)
