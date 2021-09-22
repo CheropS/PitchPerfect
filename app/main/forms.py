@@ -5,27 +5,19 @@ from wtforms.validators import required
 
 class PitchForms(FlaskForm):
 
-    title=StringField('Pitch title')
-    category=SelectField('pitch category')
-    pitch=TextAreaField('pitch written here')
-    submit=SubmitField
-    '''
-    define based on reviews last week IP
-    category-selectfield
-    title-stringfield
-    pitch-textarea
-    submit-submitfield'''
+    title=StringField('Pitch title', validators=[required()])
+    category=SelectField('pitch category', validators=[required()])
+    pitch=TextAreaField('pitch written here', validators=[required()])
+    submit=SubmitField('Submit')
+
 
 class CommentForms(FlaskForm):
-    '''
-    two fields 
-    comment-textarea
-    submit-submitfield
-    '''
+
+    comment=TextAreaField('what do you think', validators=[required()])
+    submit=SubmitField
 
 class ProfileUpdateForm(FlaskForm):
-    '''
-    bio-textarea
-    submit-submit
-    note:required needed in all classes
-    '''
+
+    bio=TextAreaField('tell us about you', validators=[required()])
+    submit=SubmitField('Submit')
+    
