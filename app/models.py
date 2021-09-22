@@ -4,6 +4,9 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from . import db
 from flask_login import UserMixin
 from . import login_manager
+from datetime import datetime
+from dataclasses import dataclass
+
 
 @login_manager.user_loader
 def load_user(pitch_id):
@@ -61,7 +64,7 @@ class UPitch(db.Model):
     category=db.Column(db.String(255))
     description=db.Column(db.String(255))
     pitch=db.Column(db.Text())
-    publishedtime=db.Column(db.DateTime)
+    publishedtime=db.Column(db.DateTime, default=datetime.utcnow)
     upvote=db.relationship('Upvote', backref='pitch', lazy='dynamic')
     downvote=db.relationship('Downvote', backref='pitch', lazy='dynamic')
     comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
@@ -89,6 +92,48 @@ class UPitch(db.Model):
 
     def verify_password(self,password):
             return check_password_hash(self.pass_secure,password)
+
+@dataclass
+class Upvote(db.Model):
+    __tablename__ = 'upvotes'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    pitch_id = db.Column(db.Integer)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_upvotes(cls, id):
+        return Upvote.query.filter_by(pitch_id=id).all()
+
+    def __repr__(self):
+        return f'{self.user_id}:{self.pitch_id}'
+
+
+@dataclass
+class Downvotes(db.Model):
+    __tablename__ = 'downvotes'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    pitch_id = db.Column(db.Integer)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_downvotes(cls, id):
+        return Downvotes.query.filter_by(pitch_id=id).all()
+
+    def __repr__(self):
+        return f'{self.user_id}:{self.pitch_id}'
+
     
 '''
 class user-bio, email, username,pic db.relationship(1:many)

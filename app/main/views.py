@@ -6,6 +6,8 @@ from . import main
 from flask_login import login_required
 from flask import render_template, redirect, url_for, abort, request
 from ..import db, photos
+from dataclasses import dataclass
+
 
 # Views
 @main.route('/')
@@ -66,3 +68,42 @@ def update_pic(uname):
         user.profile_pic_path = path
         db.session.commit()
     return redirect(url_for('main.profile',uname=uname))
+
+@dataclass
+class Upvote(db.Model):
+    __tablename__ = 'upvotes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitches.id'))
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_upvotes(cls, id):
+        return Upvote.query.filter_by(pitch_id=id).all()
+
+    def __repr__(self):
+        return f'{self.user_id}:{self.pitch_id}'
+
+
+@dataclass
+class Downvotes(db.Model):
+    __tablename__ = 'downvotes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitches.id'))
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_downvotes(cls, id):
+        return Downvotes.query.filter_by(pitch_id=id).all()
+
+    def __repr__(self):
+        return f'{self.user_id}:{self.pitch_id}'
