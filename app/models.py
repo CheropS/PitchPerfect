@@ -1,38 +1,57 @@
+
 from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash,check_password_hash
 from . import db
+from flask_login import UserMixin
+from . import login_manager
 
-class Pitch:
+@login_manager.user_loader
+def load_user(pitch_id):
+    return User.query.get(int(pitch_id))
+
+class Pitch(db.Model):
+    __tablename__='pitch'
     '''This is a class that defines Pitch class
     '''
+    id=db.Column(db.Integer, primary_key= True)
+    category=db.Column(db.String(255))
+    title=db.Column(db.String(255))
+    description=db.Column(db.Text())
 
-    def __init__(self, pitch_id, category, title, description):
-        self.pitch_id=pitch_id
-        self.category=category
-        self.title=title
-        self.description=description
+    # def(self,id, category, title, description):
+    #     self.id=id
+    #     self.category=category
+    #     self.title=title
+    #     self.description=description
 
-class User:
-    '''
-    This is a class that defines a user's bio data
-    '''
+# class User:
+#     '''
+#     This is a class that defines a user's bio data
+#     '''
 
-    def __init__(self, user_id, bio, username, picture):
-        self.user_id=user_id
-        self.bio=bio
-        self.username=username
-        self.pic=picture 
+#     def __init__(self, user_id, bio, username, picture):
+#         self.user_id=user_id
+#         self.bio=bio
+#         self.username=username
+#         self.pic=picture 
 
-# class User(db.Model):
-#     __tablename__ = 'users'
-#     id = db.Column(db.Integer,primary_key = True)
-#     username = db.Column(db.String(255))
-#     bio=db.Column(db.String(255))
-#     pic=db.Column(db.String(255))
-#     role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer,primary_key = True)
+    username = db.Column(db.String(255))
+    bio=db.Column(db.String(255))
+    pic=db.Column(db.String(255))
+    email=db.Column(db.String(255), unique=True)
+    pitch_id = db.Column(db.Integer,db.ForeignKey('pitch.id'))
+    upvote=db.relationship('Upvote', backref='pitch', lazy='dynamic')
+    downvote=db.relationship('Downvote', backref='pitch', lazy='dynamic')
+    comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
+    password_hash = db.Column(db.String(255))
 
-#     def __repr__(self):
-#         return f'User {self.username}'
+    
+
+    def __repr__(self):
+        return f'User {self.username}'
 
 class UPitch(db.Model):
     __tablename__ = 'pitches'

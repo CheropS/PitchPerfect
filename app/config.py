@@ -1,14 +1,15 @@
 import os 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Config:
     '''
     General configuration parent class
     '''
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:kenyan@localhost/pitch'
-    '''
-    take them to env. before deploying
-    '''
-    # UPLOADED_PHOTOS_DEST ='app/static/photos'
+    SQLALCHEMY_DATABASE_URI =os.environ.get('SQLALCHEMY_DATABASE_URI')
+    UPLOADED_PHOTOS_DEST ='app/static/photos'
+    SECRET_KEY=os.environ.get('SECRET_KEY')
 
     #email configurations
     MAIL_SERVER = 'smtp.googlemail.com'
@@ -40,7 +41,7 @@ class DevConfig(Config):
     Args:
         Config: The parent configuration class with General configuration settings
     '''
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:password@kenyan/pitch'
+ 
     DEBUG = True
 
 config_options = {
