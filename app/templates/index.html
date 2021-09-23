@@ -2,15 +2,26 @@
 {% import 'macros.html' as macro %}
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PitchPerfect</title>
-</head>
-<body>
-    {% macro.displayPitches(finance) %}
-</body>
-</html>
+
+    {% block content %}
+    <h1>Welcome to Pitch Perfect</h1>
+    <div class="container">
+        <h3 class="success">Categories:</h3>
+        <div class="card-body">
+            <p>Finance</p>
+            {{ macro.displayPitches(finance)}}
+        </div>
+        <div class="card-body">
+            <p>Business</p>
+        </div>
+        <div class="card-text">
+            <p>Technology</p>
+        </div>
+        <div class="card-text">
+            <p>Love & Relationships</p>
+        </div>
+        <div class="card-text">
+            <p>General</p>
+        </div>
+        </div>
+    {% endblock %}

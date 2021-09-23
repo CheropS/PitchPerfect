@@ -59,12 +59,21 @@ class User(UserMixin, db.Model):
     pic=db.Column(db.String(255))
     email=db.Column(db.String(255), unique=True)
     pitch_id = db.Column(db.Integer,db.ForeignKey('pitch.id'))
-    upvote=db.relationship('Upvote', backref='pitch', lazy='dynamic')
-    downvote=db.relationship('Downvote', backref='pitch', lazy='dynamic')
-    comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
+    upvote=db.relationship('Upvote', backref='user', lazy='dynamic')
+    downvote=db.relationship('Downvotes', backref='user', lazy='dynamic')
+    # comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
+    # password_secure=db.Column(db.String(255), nullable=False)
     password_hash = db.Column(db.String(255))
 
-    
+    @property
+    def password(self):
+        raise AttributeError('cannot be accessed')
+    @password.setter
+    def password(self, password):
+        self.password_hash=generate_password_hash(password)
+        
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return f'User {self.username}'
@@ -79,8 +88,8 @@ class UPitch(db.Model):
     pitch=db.Column(db.Text())
     publishedtime=db.Column(db.DateTime, default=datetime.utcnow)
     upvote=db.relationship('Upvote', backref='pitch', lazy='dynamic')
-    downvote=db.relationship('Downvote', backref='pitch', lazy='dynamic')
-    comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
+    downvote=db.relationship('Downvotes', backref='pitch', lazy='dynamic')
+    # comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
     pass_secure = db.Column(db.String(255))
 
     def save_pitch(self):

@@ -11,5 +11,7 @@
   <!--Importing the simple mde css and js files  -->
   {{ simplemde.css}}
   {{ simplemde.js }}
+  
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 
 {% endblock %}
