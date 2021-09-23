@@ -1,5 +1,4 @@
 
-from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash,check_password_hash
 from . import db
 from flask_login import UserMixin
@@ -12,32 +11,46 @@ from dataclasses import dataclass
 def load_user(pitch_id):
     return User.query.get(int(pitch_id))
 
-class Pitch(db.Model):
-    __tablename__='pitch'
-    '''This is a class that defines Pitch class
-    '''
-    id=db.Column(db.Integer, primary_key= True)
-    category=db.Column(db.String(255))
-    title=db.Column(db.String(255))
-    description=db.Column(db.Text())
-
-    # def(self,id, category, title, description):
-    #     self.id=id
-    #     self.category=category
-    #     self.title=title
-    #     self.description=description
-
-# class User:
+# class Pitch(db.Model):
+#     __tablename__='pitch'
+#     '''This is a class that defines Pitch class
 #     '''
-#     This is a class that defines a user's bio data
-#     '''
+#     id=db.Column(db.Integer, primary_key= True)
+#     category=db.Column(db.String(255))
+#     title=db.Column(db.String(255))
+#     description=db.Column(db.Text())
+#     pitch=db.Column(db.Text())
+#     publishedtime=db.Column(db.DateTime, default=datetime.utcnow)
+#     upvote=db.relationship('Upvote', backref='pitch', lazy='dynamic')
+#     downvote=db.relationship('Downvote', backref='pitch', lazy='dynamic')
+#     comment=db.relationship('Comment', backref='pitch', lazy='dynamic')
+#     pass_secure = db.Column(db.String(255))
 
-#     def __init__(self, user_id, bio, username, picture):
-#         self.user_id=user_id
-#         self.bio=bio
-#         self.username=username
-#         self.pic=picture 
+#     def save_pitch(self):
+#         db.session.add(self)
+#         db.session.commit()
 
+#     def delete_pitch(self):
+#         db.session.delete(self)
+#         db.session.commit()
+
+#     def __repr__(self):
+#         return f'Pitch {self.post}'
+
+#     @property
+#     def password(self):
+#             raise AttributeError('You cannot read the password attribute')
+
+#     @password.setter
+#     def password(self, password):
+#             self.pass_secure = generate_password_hash(password)
+
+
+#     def verify_password(self,password):
+#             return check_password_hash(self.pass_secure,password)
+
+
+  
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer,primary_key = True)
@@ -57,7 +70,7 @@ class User(UserMixin, db.Model):
         return f'User {self.username}'
 
 class UPitch(db.Model):
-    __tablename__ = 'pitches'
+    __tablename__ = 'pitch'
 
     id = db.Column(db.Integer,primary_key = True)
     title=db.Column(db.String(255))
@@ -79,7 +92,7 @@ class UPitch(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'Pitch {self.post}'
+        return f'UPitch {self.post}'
 
     @property
     def password(self):
@@ -95,12 +108,12 @@ class UPitch(db.Model):
 
 @dataclass
 class Upvote(db.Model):
-    __tablename__ = 'upvotes'
+    __tablename__ = 'upvote'
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    pitch_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
 
     def save(self):
         db.session.add(self)
@@ -116,12 +129,12 @@ class Upvote(db.Model):
 
 @dataclass
 class Downvotes(db.Model):
-    __tablename__ = 'downvotes'
+    __tablename__ = 'downvote'
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    pitch_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
 
     def save(self):
         db.session.add(self)
