@@ -1,7 +1,6 @@
 from flask.helpers import url_for
 from app.main.forms import PitchForms, ProfileUpdateForm
 from app.models import User, UPitch, Upvote, Downvotes
-from flask import render_template
 from . import main
 from flask_login import login_required, current_user
 from flask import render_template, redirect, url_for, abort, request
@@ -16,7 +15,10 @@ def index():
     '''
     View root page function that returns the index page and its data
     '''
-    return render_template('index.html')
+    all_pitches=User.query.all()
+    finance=UPitch.query.filter_by(category='finance')
+
+    return render_template('index.html', all_pitches=all_pitches, finance=finance)
 
 
 
@@ -37,7 +39,8 @@ def new_pitch():
         new_pitch.save_pitch()
         return redirect(url_for('pitch', id=pitch_id))
     title=f'{{pitch.title}} pitch'
-    return render_template('new_pitch.html',title = title, PitchForms=form)
+    print(form)
+    return render_template('new_pitch.html',title = title, form=form)
 
 @main.route('/user/<uname>/update',methods = ['GET','POST'])
 @login_required
